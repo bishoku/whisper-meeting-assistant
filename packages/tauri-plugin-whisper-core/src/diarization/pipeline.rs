@@ -715,8 +715,12 @@ mod tests {
     #[test]
     fn test_diarization_models_metadata() {
         let home = std::env::var("HOME").unwrap();
-        let model_dir = std::path::Path::new(&home)
-            .join("Library/Application Support/com.whisper.demo/whisper-models");
+        let mut model_dir = std::path::Path::new(&home)
+            .join("Library/Application Support/com.bishokudev.meetingassistant/whisper-models");
+        if !model_dir.exists() {
+            model_dir = std::path::Path::new(&home)
+                .join("Library/Application Support/com.whisper.demo/whisper-models");
+        }
         if !model_dir.join("segmentation.onnx").exists() {
             println!("segmentation.onnx not found, skipping");
             return;
@@ -762,8 +766,12 @@ mod tests {
     #[test]
     fn test_diarization_two_speakers() {
         let home = std::env::var("HOME").unwrap();
-        let model_dir = std::path::Path::new(&home)
-            .join("Library/Application Support/com.whisper.demo/whisper-models");
+        let mut model_dir = std::path::Path::new(&home)
+            .join("Library/Application Support/com.bishokudev.meetingassistant/whisper-models");
+        if !model_dir.exists() {
+            model_dir = std::path::Path::new(&home)
+                .join("Library/Application Support/com.whisper.demo/whisper-models");
+        }
         if !model_dir.join("segmentation.onnx").exists() {
             return;
         }
@@ -791,8 +799,12 @@ mod tests {
     #[test]
     fn test_diarization_multi_turn() {
         let home = std::env::var("HOME").unwrap();
-        let model_dir = std::path::Path::new(&home)
-            .join("Library/Application Support/com.whisper.demo/whisper-models");
+        let mut model_dir = std::path::Path::new(&home)
+            .join("Library/Application Support/com.bishokudev.meetingassistant/whisper-models");
+        if !model_dir.exists() {
+            model_dir = std::path::Path::new(&home)
+                .join("Library/Application Support/com.whisper.demo/whisper-models");
+        }
         if !model_dir.join("segmentation.onnx").exists() {
             return;
         }
@@ -872,8 +884,12 @@ mod tests {
     #[test]
     fn test_diarization_temporal_continuity_prior() {
         let home = std::env::var("HOME").unwrap();
-        let model_dir = std::path::Path::new(&home)
-            .join("Library/Application Support/com.whisper.demo/whisper-models");
+        let mut model_dir = std::path::Path::new(&home)
+            .join("Library/Application Support/com.bishokudev.meetingassistant/whisper-models");
+        if !model_dir.exists() {
+            model_dir = std::path::Path::new(&home)
+                .join("Library/Application Support/com.whisper.demo/whisper-models");
+        }
         if !model_dir.join("segmentation.onnx").exists() {
             return;
         }
