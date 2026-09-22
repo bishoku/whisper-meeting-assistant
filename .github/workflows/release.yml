@@ -117,7 +117,16 @@ jobs:
       - name: Build React SDK
         run: npm run build:sdk
 
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
+
       - name: Publish tauri-plugin-whisper-react
         run: |
           cd packages/tauri-plugin-whisper-react
-          npm publish --access public --provenance
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          PUBLISHED_VERSION=$(npm view tauri-plugin-whisper-react version 2>/dev/null || echo "")
+          if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "Version $CURRENT_VERSION is already published to npm registry. Skipping."
+          else
+            npm publish --access public --provenance
+          fi
