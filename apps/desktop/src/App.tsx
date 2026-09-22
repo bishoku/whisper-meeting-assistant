@@ -237,6 +237,8 @@ export const App: React.FC = () => {
         downloadModel={whisper.downloadModel}
         downloadProgress={whisper.downloadProgress}
         downloadingTarget={whisper.downloadingTarget}
+        statusText={whisper.statusText}
+        statusType={whisper.statusType}
       />
 
       <MeetingHistoryModal

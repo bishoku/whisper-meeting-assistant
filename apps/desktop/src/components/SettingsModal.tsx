@@ -69,6 +69,8 @@ interface SettingsModalProps {
   downloadModel: (target: 'whisper' | 'qwen' | 'vad' | 'diarization', modelId?: string) => void;
   downloadProgress: number | null;
   downloadingTarget: string | null;
+  statusText?: string;
+  statusType?: 'idle' | 'loading' | 'recording' | 'ready' | 'error';
 }
 
 const AVAILABLE_WHISPER_MODELS = [
@@ -117,6 +119,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   downloadModel,
   downloadProgress,
   downloadingTarget,
+  statusText,
+  statusType,
 }) => {
   const [activeTab, setActiveTab] = useState<'models' | 'audio' | 'features'>('models');
   const [appSearchTerm, setAppSearchTerm] = useState('');
@@ -212,6 +216,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Tab Contents */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {statusType === 'error' && statusText && (
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between animate-fade-in">
+              <span>{statusText}</span>
+            </div>
+          )}
           {/* TAB 1: MODELS */}
           {activeTab === 'models' && (
             <div className="space-y-6">

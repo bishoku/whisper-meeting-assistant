@@ -211,7 +211,7 @@ pub async fn download_silero_vad_model<R: Runtime>(
 
     let url = "https://github.com/snakers4/silero-vad/raw/master/src/silero_vad/data/silero_vad.onnx";
     let dest = models_dir.join("silero_vad.onnx");
-    let silero_hash = "33e232c003430cc9b41dd01a844a4e8412a0d594d9c6884ad404bfa4722e4967";
+    let silero_hash = "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3";
     download_file(url, dest.clone(), "silero_vad.onnx", Some(silero_hash), app_handle).await?;
 
     Ok(dest.to_string_lossy().into_owned())
