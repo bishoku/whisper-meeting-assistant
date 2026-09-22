@@ -1,52 +1,13 @@
-[package]
-name = "tauri-plugin-whisper"
+[workspace]
+resolver = "2"
+members = [
+    "packages/tauri-plugin-whisper-core",
+    "apps/desktop/src-tauri",
+]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
-authors = [""]
-description = "Tauri v2 plugin for offline, real-time Speech-to-Text using whisper.cpp"
+authors = ["bishoku"]
 license = "MIT"
-repository = "https://github.com/user/tauri-plugin-whisper"
-keywords = ["tauri", "whisper", "speech-to-text", "stt", "transcription"]
-categories = ["multimedia::audio", "accessibility"]
-links = "tauri-plugin-whisper"
-
-[lib]
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-tauri = { version = "2", default-features = false }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-thiserror = "2"
-log = "0.4"
-
-# Whisper inference
-whisper-rs = { version = "0.16", optional = true }
-
-# Async model download
-tokio = { version = "1", features = ["fs", "io-util"] }
-hound = "3.5"
-reqwest = { version = "0.12", features = ["stream"] }
-futures-util = "0.3"
-
-# ONNX Runtime for Diarization/VAD
-ort = { version = "2.0.0-rc.13", features = ["ndarray", "download-binaries"], optional = true }
-sha2 = "0.10"
-hex = "0.4"
-ndarray = { version = "0.17", optional = true }
-rustfft = { version = "6", optional = true }
-screencapturekit = { version = "10.0.3", features = ["macos_15_0", "async"], optional = true }
-
-[build-dependencies]
-tauri-plugin = { version = "2", features = ["build"] }
-
-[features]
-default = ["whisper"]
-whisper = ["dep:whisper-rs"]
-screencapturekit = ["dep:screencapturekit"]
-cuda = ["whisper-rs?/cuda", "ort?/cuda"]
-metal = ["whisper-rs?/metal", "ort?/coreml"]
-coreml = ["whisper-rs?/coreml", "ort?/coreml"]
-diarization = ["dep:ort", "dep:ndarray", "dep:rustfft"]
-vad = ["dep:ort", "dep:ndarray"]
-full = ["whisper", "diarization", "screencapturekit", "vad"]
+repository = "https://github.com/bishoku/whisper-meeting-assistant"

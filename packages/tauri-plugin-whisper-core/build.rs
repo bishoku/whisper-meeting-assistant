@@ -1,0 +1,35 @@
+const COMMANDS: &[&str] = &[
+    "load_model",
+    "start_stream",
+    "push_audio_chunk",
+    "stop_stream",
+    "download_model",
+    "download_qwen3_model",
+    "download_diarization_models",
+    "download_silero_vad_model",
+    "load_vad_model",
+    "get_downloaded_models",
+    "list_backends",
+    "load_diarization_model",
+    "set_diarization_threshold",
+    "merge_speakers",
+    "get_voice_profiles",
+    "delete_voice_profile",
+    "clear_voice_profiles",
+    "rename_voice_profile",
+    "check_screen_capture_permission",
+    "request_screen_capture_permission",
+    "list_capturable_apps",
+    "start_sck_capture",
+    "stop_sck_capture",
+    "start_recording",
+    "push_recording_chunk",
+    "stop_recording",
+    "transcribe_recording",
+    "list_recordings",
+    "delete_recording",
+];
+
+fn main() {
+    tauri_plugin::Builder::new(COMMANDS).build();
+}

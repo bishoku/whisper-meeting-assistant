@@ -5,10 +5,10 @@
 *.pdb
 
 # Node / Frontend build artifacts
-node_modules/
-**/node_modules/
-dist/
-**/dist/
+node_modules
+**/node_modules
+dist
+**/dist
 
 # NPM / Yarn / PNPM logs
 npm-debug.log*

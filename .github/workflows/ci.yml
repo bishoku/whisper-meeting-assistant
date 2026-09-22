@@ -1,0 +1,86 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-plugin:
+    name: Test Plugin (Rust)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+
+      - name: Run Plugin Tests
+        run: |
+          SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
+          DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH" cargo test -p tauri-plugin-whisper-core --features full
+
+  build-sdk:
+    name: Build React SDK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Compile SDK
+        run: npm run build:sdk
+
+  check-desktop-app:
+    name: Check Desktop App (Frontend & Rust)
+    runs-on: macos-latest
+    needs: [build-sdk]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build SDK
+        run: npm run build:sdk
+
+      - name: Build Desktop Frontend
+        run: npm run build:app
+
+      - name: Check Desktop Rust Backend
+        run: |
+          SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
+          DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH" cargo check -p whisper-meeting-assistant --features full

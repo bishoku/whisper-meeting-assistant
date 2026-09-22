@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-rename-voice-profile"
+description = "Enables the rename_voice_profile command without any pre-configured scope."
+commands.allow = ["rename_voice_profile"]
+
+[[permission]]
+identifier = "deny-rename-voice-profile"
+description = "Denies the rename_voice_profile command without any pre-configured scope."
+commands.deny = ["rename_voice_profile"]

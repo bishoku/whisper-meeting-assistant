@@ -1,0 +1,30 @@
+[package]
+name = "whisper-meeting-assistant"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "whisper_meeting_assistant_lib"
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-whisper-core = { path = "../../../packages/tauri-plugin-whisper-core", features = ["full"] }
+cpal = "0.15"
+rubato = "0.16"
+log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[features]
+default = ["custom-protocol", "full"]
+custom-protocol = ["tauri/custom-protocol"]
+metal = ["tauri-plugin-whisper-core/metal"]
+cuda = ["tauri-plugin-whisper-core/cuda"]
+diarization = ["tauri-plugin-whisper-core/diarization"]
+screencapturekit = ["tauri-plugin-whisper-core/screencapturekit"]
+vad = ["tauri-plugin-whisper-core/vad"]
+full = ["metal", "diarization", "screencapturekit", "vad"]

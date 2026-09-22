@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-get-downloaded-models"
+description = "Enables the get_downloaded_models command without any pre-configured scope."
+commands.allow = ["get_downloaded_models"]
+
+[[permission]]
+identifier = "deny-get-downloaded-models"
+description = "Denies the get_downloaded_models command without any pre-configured scope."
+commands.deny = ["get_downloaded_models"]

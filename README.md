@@ -1,183 +1,178 @@
-# tauri-plugin-whisper
+# Whisper Meeting Assistant
 
-Offline, real-time Speech-to-Text plugin for [Tauri v2](https://v2.tauri.app/) powered by [whisper.cpp](https://github.com/ggerganov/whisper.cpp) via [`whisper-rs`](https://docs.rs/whisper-rs).
+<p align="center">
+  <strong>Private, 100% Offline AI Meeting Transcription & Speaker Diarization for macOS</strong>
+  <br />
+  <em>Powered by Whisper.cpp, Silero VAD, Pyannote Diarization, and Tauri v2</em>
+</p>
 
-**Features:**
-- 🎙️ Real-time streaming transcription with sliding window inference
-- 🤖 **New in Phase 2:** Multiple ASR backends including Whisper and Qwen3-ASR
-- 🗣️ **New in Phase 2:** Speaker diarization support
-- 🚀 Hardware acceleration: Metal (macOS), CUDA (Linux/Windows), CoreML (macOS)
-- 📦 Built-in model downloader (HuggingFace, all model sizes)
-- 🔒 Fully offline — no data leaves the device
-- ⚡ Non-blocking audio pipeline via MPSC channels
-- 🎯 **Accuracy Optimized:** Uses Beam Search decoding by default for Whisper.
-- 🍏 **Apple Silicon Ready:** Built-in CoreML `ExecutionProvider` support for ONNX models (Diarization, VAD, Qwen3) to significantly reduce CPU usage.
+<p align="center">
+  <a href="https://github.com/bishoku/whisper-meeting-assistant/releases/latest">
+    <img src="https://img.shields.io/github/v/release/bishoku/whisper-meeting-assistant?label=Download%20macOS%20DMG&style=for-the-badge&color=blue" alt="Download DMG" />
+  </a>
+</p>
 
-## Architecture
+<p align="center">
+  <a href="https://crates.io/crates/tauri-plugin-whisper-core">
+    <img src="https://img.shields.io/crates/v/tauri-plugin-whisper-core.svg?style=flat-square&label=crates.io" alt="Crates.io" />
+  </a>
+  <a href="https://www.npmjs.com/package/tauri-plugin-whisper-react">
+    <img src="https://img.shields.io/npm/v/tauri-plugin-whisper-react.svg?style=flat-square&label=npm" alt="npm" />
+  </a>
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-MIT-green.svg?style=flat-square" alt="License: MIT" />
+  </a>
+  <a href="https://github.com/bishoku/whisper-meeting-assistant/actions/workflows/ci.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/bishoku/whisper-meeting-assistant/ci.yml?style=flat-square&label=CI" alt="CI Status" />
+  </a>
+</p>
 
-```mermaid
-flowchart TD
-    A[Frontend / Backend Audio Source] -->|push_audio_chunk| B(MPSC Channel)
-    B --> C[Ring Buffer Worker]
-    C -->|Sliding Window| D{ASR Backend}
-    
-    D -->|whisper| E[whisper-rs inference]
-    D -->|qwen3-asr| F[Qwen3 inference]
-    
-    E --> G{Diarization Enabled?}
-    F --> G
-    
-    G -->|Yes| H[Diarization Model]
-    H -->|whisper-diarized-result| I[Frontend Listener]
-    
-    G -->|No| J[whisper-partial/final-result]
-    J --> I
+---
+
+## Overview
+
+**Whisper Meeting Assistant** is a desktop application designed for privacy-conscious professionals who want automated meeting transcripts without sending confidential audio to third-party cloud servers. Everything runs entirely on your Mac using Apple Silicon Metal acceleration.
+
+---
+
+## Key Features
+
+- 🔒 **100% Private & Offline:** Zero telemetry, no cloud APIs. Your meeting audio and transcripts never leave your machine.
+- ⚡ **Metal GPU Acceleration:** Optimized for Apple Silicon (M1, M2, M3, M4) with minimal battery drain and real-time response.
+- 👥 **Smart Speaker Diarization:** Identifies distinct speakers using Pyannote neural embeddings. Name participants, build persistent voice profiles across meetings, and merge duplicate speakers.
+- 🔇 **Silero Voice Activity Detection (VAD):** Filters background noise, breaths, and silence to eliminate hallucinations and reduce CPU usage.
+- 🖥️ **System Audio Capture (macOS ScreenCaptureKit):** Record and transcribe remote participants from Zoom, Google Meet, Microsoft Teams, and Slack Huddles with zero virtual audio cables.
+- 🎙️ **Dual Transcription Modes:**
+  - **Live Streaming Mode:** Real-time speech-to-text with instantaneous text streaming and speaker badges.
+  - **Record-then-Transcribe Mode:** Records high-fidelity 16 kHz audio directly to disk for long meetings, then processes offline with multi-pass diarization and a progress bar.
+- 📂 **Meeting Archive & Export:** Search past meetings, replay audio, and export transcripts to Markdown, TXT, or JSON with timestamped speaker turns.
+
+---
+
+## Monorepo Architecture
+
+This repository is structured as a product-first monorepo consisting of the desktop application and its modular open-source developer libraries:
+
+```
+whisper-meeting-assistant/
+├── apps/
+│   └── desktop/                            # 🍏 Flagship macOS Desktop Application (Tauri v2 + React)
+│
+├── packages/
+│   ├── tauri-plugin-whisper-core/          # 🦀 Rust Tauri v2 Plugin (published to crates.io)
+│   └── tauri-plugin-whisper-react/         # 📦 React SDK & Hooks (published to npm)
+│
+├── .github/
+│   └── workflows/
+│       ├── ci.yml                          # Continuous Integration (tests & type checks)
+│       └── release.yml                     # Unified release (DMG, Crates.io, NPM)
+│
+└── README.md
 ```
 
-## Installation
+---
 
-### Rust (Cargo.toml of your Tauri app)
+## For Developers
+
+Want to add offline Whisper transcription and speaker diarization to your own Tauri v2 apps? You can use the standalone plugin and React SDK directly:
+
+### 1. Tauri Plugin (`tauri-plugin-whisper-core`)
+
+Add the Rust crate to your `src-tauri/Cargo.toml`:
 
 ```toml
 [dependencies]
-tauri-plugin-whisper = { path = "../tauri-plugin-whisper", features = ["full"] }
+tauri-plugin-whisper-core = { version = "0.1", features = ["full", "metal"] }
 ```
 
-#### Feature Flags
-
-Enable features specifically for your needs:
-
-- `whisper`: (Default) Enables the standard Whisper ASR backend.
-- `qwen3-asr`: Enables the new Qwen3-ASR backend.
-- `diarization`: Enables speaker diarization support.
-- `full`: Enables all core features (metal, qwen3-asr, diarization).
-- `metal`: GPU acceleration on macOS (e.g. `cargo run --features "metal"`).
-- `cuda`: GPU acceleration on Linux/Windows.
-- `coreml`: Neural engine acceleration on macOS (for both Whisper and ONNX models).
-
-### Register the Plugin (src-tauri/src/lib.rs)
+Register in `src-tauri/src/lib.rs`:
 
 ```rust
-pub fn run() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_whisper::init())
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
-}
+tauri::Builder::default()
+    .plugin(tauri_plugin_whisper_core::init())
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 ```
 
-### Capabilities (src-tauri/capabilities/default.json)
+Enable capability in `src-tauri/capabilities/default.json`:
 
 ```json
 {
-  "identifier": "default",
-  "description": "Default capabilities",
-  "windows": ["main"],
   "permissions": [
     "core:default",
-    "whisper:default"
+    "whisper-core:default"
   ]
 }
 ```
 
-## Usage
+### 2. React SDK (`tauri-plugin-whisper-react`)
 
-### TypeScript (Frontend)
+Install from npm:
 
-```typescript
-import {
-  loadModel,
-  startStream,
-  pushAudioChunk,
-  stopStream,
-  downloadModel,
-  downloadQwen3Model,
-  downloadDiarizationModels,
-  loadDiarizationModel,
-  onPartialResult,
-  onFinalResult,
-  onDiarizedResult,
-  onDownloadProgress,
-} from 'tauri-plugin-whisper-api'; // or your mapped path
-
-// 1. Download models
-const unlistenProgress = await onDownloadProgress((p) => {
-  console.log(`Download: ${p.percent.toFixed(1)}%`);
-});
-
-const modelPath = await downloadModel('base.en');
-// Or use Qwen3: const modelPath = await downloadQwen3Model();
-
-const diarizationModelDir = await downloadDiarizationModels();
-unlistenProgress();
-
-// 2. Load the main model
-await loadModel(modelPath, true, 'whisper'); // set 'qwen3-asr' if using Qwen
-
-// 3. Load diarization model (optional)
-await loadDiarizationModel(diarizationModelDir, 8); // Max 8 speakers
-
-// 4. Listen for transcription results
-const unlistenPartial = await onPartialResult((r) => console.log(`[partial] ${r.text}`));
-const unlistenFinal = await onFinalResult((r) => console.log(`[final]`, r.segments));
-const unlistenDiarized = await onDiarizedResult((r) => {
-  for (const seg of r.segments) {
-    console.log(`[Speaker ${seg.speaker_id}] ${seg.text}`);
-  }
-});
-
-// 5. Start streaming
-await startStream({ language: 'en' });
-
-// 6. Push audio chunks (from your audio capture pipeline)
-const chunk = new Float32Array(3200); // 200ms at 16kHz
-await pushAudioChunk(Array.from(chunk));
-
-// 7. Stop when done
-await stopStream();
-unlistenPartial();
-unlistenFinal();
-unlistenDiarized();
+```bash
+npm install tauri-plugin-whisper-react @tauri-apps/api
 ```
 
-## API Docs (New Commands)
+Use in React components:
 
-### `load_model`
-Loads the ASR model. Now accepts a `backend` string parameter (`"whisper"` or `"qwen3-asr"`).
+```tsx
+import { useWhisper, useDiarization, useRecording } from 'tauri-plugin-whisper-react';
 
-### `download_qwen3_model`
-Downloads the Qwen3-ASR model and returns the path.
+export function MeetingRecorder() {
+  const { isRunning, start, stop, segments, partialText } = useWhisper();
+  const { profiles, renameProfile } = useDiarization();
 
-### `download_diarization_models`
-Downloads required models for speaker diarization and returns the base directory path.
+  return (
+    <div>
+      <button onClick={() => (isRunning ? stop() : start())}>
+        {isRunning ? 'Stop' : 'Start'}
+      </button>
+      <p>{partialText}</p>
+      {segments.map((s, idx) => (
+        <div key={idx}>[{s.speaker_id}]: {s.text}</div>
+      ))}
+    </div>
+  );
+}
+```
 
-### `load_diarization_model`
-Loads the diarization models from the given directory and specifies a `maxSpeakers` count.
+---
 
-### `list_backends`
-Returns a list of supported ASR backends compiled into the plugin.
+## Local Development & Building
 
-## Events
+### Prerequisites
 
-| Event | Payload | When |
-|-------|---------|------|
-| `whisper-partial-result` | `PartialResultPayload` | Each new segment during inference |
-| `whisper-final-result` | `FinalResultPayload` | After each inference pass completes (if diarization is off) |
-| `whisper-diarized-result` | `DiarizedResultPayload` | After each inference pass (if diarization is on) |
-| `whisper-download-progress` | `DownloadProgressPayload` | During model download |
-| `whisper-stream-stopped` | `()` | When the worker thread has fully stopped |
+- **macOS** 13.0+ (Apple Silicon recommended)
+- **Xcode Command Line Tools:** `xcode-select --install`
+- **Rust:** `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+- **Node.js:** v20+
 
-## Models
+### Setup & Run
 
-| Model ID | Params | Disk | RAM | Recommended Use |
-|----------|--------|------|-----|-----------------|
-| `tiny` / `tiny.en` | 39M | 75 MB | ~390 MB | Testing, low-resource |
-| `base` / `base.en` | 74M | 142 MB | ~500 MB | Quick transcription |
-| `small` / `small.en` | 244M | 466 MB | ~1 GB | Good accuracy/speed balance |
-| `medium` / `medium.en` | 769M | 1.5 GB | ~2.6 GB | High accuracy |
-| `large-v3` | 1550M | 3.1 GB | ~4.7 GB | Best accuracy |
-| `large-v3-turbo` | 809M | 1.6 GB | ~2.8 GB | Fast + accurate |
+```bash
+# 1. Clone repository
+git clone https://github.com/bishoku/whisper-meeting-assistant.git
+cd whisper-meeting-assistant
+
+# 2. Install workspace dependencies
+npm install
+
+# 3. Build SDK
+npm run build:sdk
+
+# 4. Run Desktop App in development mode
+npm run dev
+```
+
+### Run Tests
+
+```bash
+# Run all 12 plugin tests (Whisper, VAD, Diarization, Merger)
+npm run test:plugin
+```
+
+---
 
 ## License
 
-MIT
+This project is open-source under the [MIT License](LICENSE).

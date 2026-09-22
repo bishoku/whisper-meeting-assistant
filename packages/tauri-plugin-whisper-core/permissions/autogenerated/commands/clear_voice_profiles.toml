@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-clear-voice-profiles"
+description = "Enables the clear_voice_profiles command without any pre-configured scope."
+commands.allow = ["clear_voice_profiles"]
+
+[[permission]]
+identifier = "deny-clear-voice-profiles"
+description = "Denies the clear_voice_profiles command without any pre-configured scope."
+commands.deny = ["clear_voice_profiles"]

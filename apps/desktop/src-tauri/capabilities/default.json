@@ -1,0 +1,9 @@
+{
+  "identifier": "default",
+  "description": "Default capabilities for Whisper Meeting Assistant",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "whisper-core:default"
+  ]
+}

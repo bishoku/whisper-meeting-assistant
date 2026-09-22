@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-get-voice-profiles"
+description = "Enables the get_voice_profiles command without any pre-configured scope."
+commands.allow = ["get_voice_profiles"]
+
+[[permission]]
+identifier = "deny-get-voice-profiles"
+description = "Denies the get_voice_profiles command without any pre-configured scope."
+commands.deny = ["get_voice_profiles"]

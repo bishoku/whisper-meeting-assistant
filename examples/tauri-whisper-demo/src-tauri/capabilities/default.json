@@ -1,9 +1,0 @@
-{
-  "identifier": "default",
-  "description": "Default capabilities for the whisper demo app",
-  "windows": ["main"],
-  "permissions": [
-    "core:default",
-    "whisper:default"
-  ]
-}

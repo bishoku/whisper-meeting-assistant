@@ -1,0 +1,33 @@
+{
+  "productName": "Whisper Meeting Assistant",
+  "version": "0.1.0",
+  "identifier": "com.whisper.meetingassistant",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "Whisper Meeting Assistant",
+        "width": 1100,
+        "height": 780,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "macOS": {
+      "infoPlist": "Info.plist"
+    }
+  },
+  "plugins": {}
+}

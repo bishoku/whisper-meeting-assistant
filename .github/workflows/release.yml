@@ -1,0 +1,125 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0)'
+        required: true
+        default: 'v0.1.0'
+
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 1: Build & Release macOS Desktop Application
+  # ─────────────────────────────────────────────────────────────────────────────
+  release-macos-app:
+    name: Build & Release macOS App
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+
+      - name: Install Node Dependencies
+        run: npm ci
+
+      - name: Build React SDK
+        run: npm run build:sdk
+
+      - name: Build Desktop Frontend
+        run: npm run build:app
+
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2.0.0" --locked
+
+      - name: Build macOS DMG & App
+        run: |
+          SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
+          export DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH"
+          cd apps/desktop/src-tauri
+          cargo tauri build --features full
+
+      - name: Publish to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || inputs.tag }}
+          name: "Whisper Meeting Assistant ${{ github.ref_name || inputs.tag }}"
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            target/release/bundle/dmg/*.dmg
+            target/release/bundle/macos/*.app.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 2: Publish Tauri Plugin to Crates.io
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish-crate:
+    name: Publish to Crates.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish tauri-plugin-whisper-core
+        run: |
+          cargo publish -p tauri-plugin-whisper-core --token "${{ secrets.CARGO_REGISTRY_TOKEN }}"
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Job 3: Publish React SDK to NPM Registry
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish-npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build React SDK
+        run: npm run build:sdk
+
+      - name: Publish tauri-plugin-whisper-react
+        run: |
+          cd packages/tauri-plugin-whisper-react
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
