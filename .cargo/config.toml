@@ -1,0 +1,10 @@
+# Swift runtime rpath — required when linking crates that compile Swift code
+# (e.g. screencapturekit, apple-cf, apple-metal).
+#
+# libswift_Concurrency.dylib lives in swift-5.5/macosx on this machine.
+# Without this rpath the binary crashes at startup with "Library not loaded".
+[target.aarch64-apple-darwin]
+rustflags = [
+    "-C", "link-arg=-Wl,-rpath,/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx",
+    "-C", "link-arg=-Wl,-rpath,/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx",
+]

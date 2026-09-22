@@ -8,7 +8,8 @@
     "apps/desktop"
   ],
   "scripts": {
-    "dev": "npm run --prefix apps/desktop dev",
+    "dev": "npm run --prefix apps/desktop dev:app",
+    "dev:ui": "npm run --prefix apps/desktop dev",
     "build:sdk": "npm run --prefix packages/tauri-plugin-whisper-react build",
     "build:app": "npm run --prefix apps/desktop build",
     "build": "npm run build:sdk && npm run build:app",
