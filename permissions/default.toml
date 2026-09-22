@@ -1,0 +1,181 @@
+[[permission]]
+identifier = "allow-load-model"
+description = "Allows loading a Whisper model into memory."
+commands.allow = ["load_model"]
+
+[[permission]]
+identifier = "allow-start-stream"
+description = "Allows starting a streaming transcription session."
+commands.allow = ["start_stream"]
+
+[[permission]]
+identifier = "allow-push-audio-chunk"
+description = "Allows pushing PCM audio chunks to the active stream."
+commands.allow = ["push_audio_chunk"]
+
+[[permission]]
+identifier = "allow-stop-stream"
+description = "Allows stopping the active streaming session."
+commands.allow = ["stop_stream"]
+
+[[permission]]
+identifier = "allow-download-model"
+description = "Allows downloading Whisper models from HuggingFace."
+commands.allow = ["download_model"]
+
+[[permission]]
+identifier = "allow-list-backends"
+description = "Allows listing available ASR backends."
+commands.allow = ["list_backends"]
+
+[[permission]]
+identifier = "allow-download-qwen3-model"
+description = "Allows downloading Qwen3-ASR models from HuggingFace."
+commands.allow = ["download_qwen3_model"]
+
+[[permission]]
+identifier = "allow-download-diarization-models"
+description = "Allows downloading diarization models from HuggingFace."
+commands.allow = ["download_diarization_models"]
+
+[[permission]]
+identifier = "allow-load-diarization-model"
+description = "Allows loading diarization models."
+commands.allow = ["load_diarization_model"]
+
+[[permission]]
+identifier = "allow-check-screen-capture-permission"
+description = "Allows checking ScreenCaptureKit permissions."
+commands.allow = ["check_screen_capture_permission"]
+
+[[permission]]
+identifier = "allow-request-screen-capture-permission"
+description = "Allows requesting ScreenCaptureKit permissions."
+commands.allow = ["request_screen_capture_permission"]
+
+[[permission]]
+identifier = "allow-list-capturable-apps"
+description = "Allows listing running apps for ScreenCaptureKit audio capture."
+commands.allow = ["list_capturable_apps"]
+
+[[permission]]
+identifier = "allow-start-sck-capture"
+description = "Allows starting ScreenCaptureKit system audio + microphone capture."
+commands.allow = ["start_sck_capture"]
+
+[[permission]]
+identifier = "allow-stop-sck-capture"
+description = "Allows stopping ScreenCaptureKit capture."
+commands.allow = ["stop_sck_capture"]
+
+[[permission]]
+identifier = "allow-download-silero-vad-model"
+description = "Allows downloading Silero VAD model."
+commands.allow = ["download_silero_vad_model"]
+
+[[permission]]
+identifier = "allow-load-vad-model"
+description = "Allows configuring or loading Silero VAD model."
+commands.allow = ["load_vad_model"]
+
+[[permission]]
+identifier = "allow-get-downloaded-models"
+description = "Allows checking which models are already downloaded on disk."
+commands.allow = ["get_downloaded_models"]
+
+[[permission]]
+identifier = "allow-set-diarization-threshold"
+description = "Allows updating diarization similarity threshold."
+commands.allow = ["set_diarization_threshold"]
+
+[[permission]]
+identifier = "allow-merge-speakers"
+description = "Allows merging two detected speakers into one."
+commands.allow = ["merge_speakers"]
+
+[[permission]]
+identifier = "allow-get-voice-profiles"
+description = "Allows fetching learned speaker voice profiles."
+commands.allow = ["get_voice_profiles"]
+
+[[permission]]
+identifier = "allow-delete-voice-profile"
+description = "Allows deleting an enrolled speaker voice profile."
+commands.allow = ["delete_voice_profile"]
+
+[[permission]]
+identifier = "allow-clear-voice-profiles"
+description = "Allows clearing all enrolled speaker voice profiles."
+commands.allow = ["clear_voice_profiles"]
+
+[[permission]]
+identifier = "allow-rename-voice-profile"
+description = "Allows assigning a custom name to a speaker voice profile."
+commands.allow = ["rename_voice_profile"]
+
+# ── Record-then-transcribe permissions ───────────────────────────────────────
+
+[[permission]]
+identifier = "allow-start-recording"
+description = "Allows starting a disk-based audio recording session."
+commands.allow = ["start_recording"]
+
+[[permission]]
+identifier = "allow-push-recording-chunk"
+description = "Allows writing PCM audio chunks to the active recording file."
+commands.allow = ["push_recording_chunk"]
+
+[[permission]]
+identifier = "allow-stop-recording"
+description = "Allows finalizing and closing the active recording session."
+commands.allow = ["stop_recording"]
+
+[[permission]]
+identifier = "allow-transcribe-recording"
+description = "Allows batch transcription (STT + diarization) of a saved recording."
+commands.allow = ["transcribe_recording"]
+
+[[permission]]
+identifier = "allow-list-recordings"
+description = "Allows listing saved recording files in the app data directory."
+commands.allow = ["list_recordings"]
+
+[[permission]]
+identifier = "allow-delete-recording"
+description = "Allows deleting a saved recording file from disk."
+commands.allow = ["delete_recording"]
+
+[default]
+description = "Default permissions for the whisper plugin — allows all commands."
+permissions = [
+    "allow-load-model",
+    "allow-start-stream",
+    "allow-push-audio-chunk",
+    "allow-stop-stream",
+    "allow-download-model",
+    "allow-download-qwen3-model",
+    "allow-download-diarization-models",
+    "allow-load-diarization-model",
+    "allow-set-diarization-threshold",
+    "allow-merge-speakers",
+    "allow-get-voice-profiles",
+    "allow-delete-voice-profile",
+    "allow-clear-voice-profiles",
+    "allow-rename-voice-profile",
+    "allow-download-silero-vad-model",
+    "allow-load-vad-model",
+    "allow-get-downloaded-models",
+    "allow-list-backends",
+    "allow-check-screen-capture-permission",
+    "allow-request-screen-capture-permission",
+    "allow-list-capturable-apps",
+    "allow-start-sck-capture",
+    "allow-stop-sck-capture",
+    # Record-then-transcribe
+    "allow-start-recording",
+    "allow-push-recording-chunk",
+    "allow-stop-recording",
+    "allow-transcribe-recording",
+    "allow-list-recordings",
+    "allow-delete-recording",
+]

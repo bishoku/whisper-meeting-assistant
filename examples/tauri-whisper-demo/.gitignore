@@ -1,0 +1,17 @@
+# Frontend build & dependencies
+node_modules/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Tauri / Rust target
+src-tauri/target/
+
+# OS & Environment
+.DS_Store
+.env
+.env.local

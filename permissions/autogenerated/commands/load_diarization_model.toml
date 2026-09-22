@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-load-diarization-model"
+description = "Enables the load_diarization_model command without any pre-configured scope."
+commands.allow = ["load_diarization_model"]
+
+[[permission]]
+identifier = "deny-load-diarization-model"
+description = "Denies the load_diarization_model command without any pre-configured scope."
+commands.deny = ["load_diarization_model"]

@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-download-qwen3-model"
+description = "Enables the download_qwen3_model command without any pre-configured scope."
+commands.allow = ["download_qwen3_model"]
+
+[[permission]]
+identifier = "deny-download-qwen3-model"
+description = "Denies the download_qwen3_model command without any pre-configured scope."
+commands.deny = ["download_qwen3_model"]

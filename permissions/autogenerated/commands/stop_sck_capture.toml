@@ -1,0 +1,13 @@
+# Automatically generated - DO NOT EDIT!
+
+"$schema" = "../../schemas/schema.json"
+
+[[permission]]
+identifier = "allow-stop-sck-capture"
+description = "Enables the stop_sck_capture command without any pre-configured scope."
+commands.allow = ["stop_sck_capture"]
+
+[[permission]]
+identifier = "deny-stop-sck-capture"
+description = "Denies the stop_sck_capture command without any pre-configured scope."
+commands.deny = ["stop_sck_capture"]

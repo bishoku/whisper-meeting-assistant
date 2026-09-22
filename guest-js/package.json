@@ -1,0 +1,21 @@
+{
+  "name": "tauri-plugin-whisper-api",
+  "version": "0.1.0",
+  "description": "TypeScript bindings for tauri-plugin-whisper",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "@tauri-apps/api": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "typescript": "^5.6.0"
+  },
+  "license": "MIT"
+}
