@@ -120,6 +120,4 @@ jobs:
       - name: Publish tauri-plugin-whisper-react
         run: |
           cd packages/tauri-plugin-whisper-react
-          npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish --access public --provenance
