@@ -12,6 +12,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
         "title": "Whisper Meeting Assistant",
         "width": 1100,
         "height": 780,
