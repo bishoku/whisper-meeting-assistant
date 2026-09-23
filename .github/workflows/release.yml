@@ -69,13 +69,25 @@ jobs:
           rm -rf target/release/build/whisper-rs-sys* target/release/build/ort-sys* target/build/*/whisper-rs-sys*
           
           cd apps/desktop/src-tauri
-          cargo tauri build --features full
+          cargo tauri build --features full --bundles app,dmg
 
-          # Package .app bundle into .app.tar.gz for GitHub Releases
+          # Gather all generated bundle artifacts into release-artifacts directory
+          mkdir -p "$GITHUB_WORKSPACE/release-artifacts"
           cd "$GITHUB_WORKSPACE"
-          if [ -d "target/release/bundle/macos/Whisper Meeting Assistant.app" ]; then
-            tar -czf "target/release/bundle/macos/Whisper-Meeting-Assistant.app.tar.gz" -C "target/release/bundle/macos" "Whisper Meeting Assistant.app"
-          fi
+          
+          echo "=== Searching for DMG artifacts ==="
+          find . -name "*.dmg" -print -exec cp -v {} "$GITHUB_WORKSPACE/release-artifacts/" \;
+
+          echo "=== Searching for .app bundle and packaging to tar.gz ==="
+          find . -name "Whisper Meeting Assistant.app" -type d -print | head -n 1 | while read app_path; do
+            app_dir="$(dirname "$app_path")"
+            app_name="$(basename "$app_path")"
+            echo "Packaging $app_name from $app_dir"
+            tar -czf "$GITHUB_WORKSPACE/release-artifacts/Whisper-Meeting-Assistant.app.tar.gz" -C "$app_dir" "$app_name"
+          done
+
+          echo "=== Release Artifacts List ==="
+          ls -lh "$GITHUB_WORKSPACE/release-artifacts"
 
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
@@ -85,9 +97,8 @@ jobs:
           draft: false
           prerelease: false
           generate_release_notes: true
-          files: |
-            target/release/bundle/dmg/*.dmg
-            target/release/bundle/macos/*.app.tar.gz
+          fail_on_unmatched_files: true
+          files: release-artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
