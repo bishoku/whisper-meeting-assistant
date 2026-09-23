@@ -60,8 +60,22 @@ jobs:
         run: |
           SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
           export DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH"
+          export MACOSX_DEPLOYMENT_TARGET="11.0"
+          export CMAKE_OSX_DEPLOYMENT_TARGET="11.0"
+          export CFLAGS="-mmacosx-version-min=11.0"
+          export CXXFLAGS="-mmacosx-version-min=11.0"
+          
+          # Clean any stale cmake/whisper-rs-sys cache restored from rust-cache
+          rm -rf target/release/build/whisper-rs-sys* target/release/build/ort-sys* target/build/*/whisper-rs-sys*
+          
           cd apps/desktop/src-tauri
           cargo tauri build --features full
+
+          # Package .app bundle into .app.tar.gz for GitHub Releases
+          cd "$GITHUB_WORKSPACE"
+          if [ -d "target/release/bundle/macos/Whisper Meeting Assistant.app" ]; then
+            tar -czf "target/release/bundle/macos/Whisper-Meeting-Assistant.app.tar.gz" -C "target/release/bundle/macos" "Whisper Meeting Assistant.app"
+          fi
 
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
@@ -92,7 +106,17 @@ jobs:
 
       - name: Publish tauri-plugin-whisper-core
         run: |
-          cargo publish -p tauri-plugin-whisper-core --token "${{ secrets.CARGO_REGISTRY_TOKEN }}"
+          export MACOSX_DEPLOYMENT_TARGET="11.0"
+          export CMAKE_OSX_DEPLOYMENT_TARGET="11.0"
+          export CFLAGS="-mmacosx-version-min=11.0"
+          export CXXFLAGS="-mmacosx-version-min=11.0"
+          CURRENT_VERSION=$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name=="tauri-plugin-whisper-core") | .version')
+          PUBLISHED_VERSION=$(curl -s -H "User-Agent: github-actions" https://crates.io/api/v1/crates/tauri-plugin-whisper-core | jq -r '.crate.max_version // empty')
+          if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo "Version $CURRENT_VERSION is already published to crates.io. Skipping."
+          else
+            cargo publish -p tauri-plugin-whisper-core --token "${{ secrets.CARGO_REGISTRY_TOKEN }}"
+          fi
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
