@@ -17,7 +17,7 @@ permissions:
 
 env:
   CARGO_TERM_COLOR: always
-  MACOSX_DEPLOYMENT_TARGET: "11.0"
+  MACOSX_DEPLOYMENT_TARGET: "15.0"
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────────
@@ -60,10 +60,10 @@ jobs:
         run: |
           SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
           export DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH"
-          export MACOSX_DEPLOYMENT_TARGET="11.0"
-          export CMAKE_OSX_DEPLOYMENT_TARGET="11.0"
-          export CFLAGS="-mmacosx-version-min=11.0"
-          export CXXFLAGS="-mmacosx-version-min=11.0"
+          export MACOSX_DEPLOYMENT_TARGET="15.0"
+          export CMAKE_OSX_DEPLOYMENT_TARGET="15.0"
+          export CFLAGS="-mmacosx-version-min=15.0"
+          export CXXFLAGS="-mmacosx-version-min=15.0"
           
           # Clean any stale cmake/whisper-rs-sys cache restored from rust-cache
           rm -rf target/release/build/whisper-rs-sys* target/release/build/ort-sys* target/build/*/whisper-rs-sys*
@@ -106,10 +106,10 @@ jobs:
 
       - name: Publish tauri-plugin-whisper-core
         run: |
-          export MACOSX_DEPLOYMENT_TARGET="11.0"
-          export CMAKE_OSX_DEPLOYMENT_TARGET="11.0"
-          export CFLAGS="-mmacosx-version-min=11.0"
-          export CXXFLAGS="-mmacosx-version-min=11.0"
+          export MACOSX_DEPLOYMENT_TARGET="15.0"
+          export CMAKE_OSX_DEPLOYMENT_TARGET="15.0"
+          export CFLAGS="-mmacosx-version-min=15.0"
+          export CXXFLAGS="-mmacosx-version-min=15.0"
           CURRENT_VERSION=$(cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.name=="tauri-plugin-whisper-core") | .version')
           PUBLISHED_VERSION=$(curl -s -H "User-Agent: github-actions" https://crates.io/api/v1/crates/tauri-plugin-whisper-core | jq -r '.crate.max_version // empty')
           if [ "$CURRENT_VERSION" = "$PUBLISHED_VERSION" ]; then

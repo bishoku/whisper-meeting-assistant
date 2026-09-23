@@ -8,7 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  MACOSX_DEPLOYMENT_TARGET: "11.0"
+  MACOSX_DEPLOYMENT_TARGET: "15.0"
 
 jobs:
   test-plugin:
@@ -85,9 +85,9 @@ jobs:
         run: |
           SWIFT_PATH="$(xcode-select -p)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx:/usr/lib/swift"
           export DYLD_FALLBACK_LIBRARY_PATH="$SWIFT_PATH"
-          export MACOSX_DEPLOYMENT_TARGET="11.0"
-          export CMAKE_OSX_DEPLOYMENT_TARGET="11.0"
-          export CFLAGS="-mmacosx-version-min=11.0"
-          export CXXFLAGS="-mmacosx-version-min=11.0"
+          export MACOSX_DEPLOYMENT_TARGET="15.0"
+          export CMAKE_OSX_DEPLOYMENT_TARGET="15.0"
+          export CFLAGS="-mmacosx-version-min=15.0"
+          export CXXFLAGS="-mmacosx-version-min=15.0"
           rm -rf target/release/build/whisper-rs-sys* target/build/*/whisper-rs-sys*
           cargo check -p whisper-meeting-assistant --features full
